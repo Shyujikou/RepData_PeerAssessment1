@@ -69,8 +69,10 @@ We are required to perform two steps for this question:
 
 
 ```r
-dt_avg_steps_by_interval <- aggregate(dt$steps, by=list(dt$interval), FUN=mean, na.rm=TRUE)
-qplot(Group.1, x, data=dt_avg_steps_by_interval, geom="line", xlab="5-minute interval", ylab="Average number of steps")
+dt_avg_steps_by_interval <- aggregate(dt$steps, by=list(dt$interval), 
+                                      FUN=mean, na.rm=TRUE)
+qplot(Group.1, x, data=dt_avg_steps_by_interval, geom="line", 
+      xlab="5-minute interval", ylab="Average number of steps")
 ```
 
 ![plot of chunk question2-1](figure/question2-1-1.png) 
@@ -109,14 +111,18 @@ We are going to use the mean (rounded to integer) for each 5-minute interval to 
 
 
 ```r
-# Create a new data frame with merging the original one and the "mean steps by interval" one by interval
-dt_filled <- merge(dt, dt_avg_steps_by_interval, by.x = "interval", by.y = "Group.1", all.x = TRUE)
+# Create a new data frame by merging the original one and 
+# the "mean steps by interval" one by interval
+dt_filled <- merge(dt, dt_avg_steps_by_interval, 
+                   by.x = "interval", by.y = "Group.1", all.x = TRUE)
 
 # Subsitute missing "steps" values with corresponding "mean steps" values
-dt_filled[is.na(dt_filled$steps), "steps"] <- round(dt_filled[is.na(dt_filled$steps), "x"])
+dt_filled[is.na(dt_filled$steps), "steps"] <- 
+  round(dt_filled[is.na(dt_filled$steps), "x"])
 
 # Reshape the new data frame to make it "equal" to the original one
-dt_filled <- dt_filled[order(dt_filled[,3], dt_filled[,1]), c("steps","date","interval")]
+dt_filled <- dt_filled[order(dt_filled[,3], dt_filled[,1]), 
+                       c("steps","date","interval")]
 row.names(dt_filled) <- NULL
 ```
 
@@ -124,8 +130,11 @@ row.names(dt_filled) <- NULL
 
 
 ```r
-dt_filled_total_steps_by_day <- aggregate(dt_filled$steps, by=list(dt_filled$date), FUN=sum)
-qplot(x, data=dt_filled_total_steps_by_day, xlab="Total number of steps per day")
+dt_filled_total_steps_by_day <- aggregate(dt_filled$steps, 
+                                          by=list(dt_filled$date), 
+                                          FUN=sum)
+qplot(x, data=dt_filled_total_steps_by_day, 
+      xlab="Total number of steps per day")
 ```
 
 ```
@@ -136,7 +145,8 @@ qplot(x, data=dt_filled_total_steps_by_day, xlab="Total number of steps per day"
 
 ```r
 # Mean
-mean_total_steps_by_day_filled <- mean(dt_filled_total_steps_by_day$x, na.rm=TRUE)
+mean_total_steps_by_day_filled <- 
+  mean(dt_filled_total_steps_by_day$x, na.rm=TRUE)
 cat("Mean:", format(mean_total_steps_by_day_filled, scientific=FALSE))
 ```
 
@@ -146,7 +156,8 @@ cat("Mean:", format(mean_total_steps_by_day_filled, scientific=FALSE))
 
 ```r
 # Median
-med_total_steps_by_day_filled <- median(dt_filled_total_steps_by_day$x, na.rm=TRUE)
+med_total_steps_by_day_filled <- 
+  median(dt_filled_total_steps_by_day$x, na.rm=TRUE)
 cat("Median:", med_total_steps_by_day_filled)
 ```
 
@@ -167,15 +178,22 @@ We are required to perform two steps for this question:
 
 
 ```r
-dt_filled[, "weekdays"] <- factor(sapply(weekdays(dt_filled$date, abbreviate = TRUE), function(x) if (x %in% c("Sat", "Sun")) "Weekend" else "Weekday", USE.NAMES = FALSE))
+dt_filled[, "weekdays"] <- 
+  factor(sapply(weekdays(dt_filled$date, abbreviate=TRUE), 
+                function(x) if (x %in% c("Sat", "Sun")) "Weekend" else "Weekday", 
+                USE.NAMES=FALSE))
 ```
 
 (2) Make a panel plot containing a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
 
 ```r
-dt_filled_avg_steps_by_interval <- aggregate(dt_filled$steps, by=list(dt_filled$interval, dt_filled$weekdays), FUN=mean, na.rm=TRUE)
-qplot(Group.1, x, facets = Group.2 ~ ., data=dt_filled_avg_steps_by_interval, geom="line", xlab="5-minute interval", ylab="Average number of steps")
+dt_filled_avg_steps_by_interval <- aggregate(dt_filled$steps, 
+                                             by=list(dt_filled$interval, dt_filled$weekdays), 
+                                             FUN=mean, na.rm=TRUE)
+qplot(Group.1, x, facets = Group.2 ~ ., 
+      data=dt_filled_avg_steps_by_interval, geom="line", 
+      xlab="5-minute interval", ylab="Average number of steps")
 ```
 
 ![plot of chunk question4-2](figure/question4-2-1.png) 
